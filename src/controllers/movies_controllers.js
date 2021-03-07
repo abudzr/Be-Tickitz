@@ -1,0 +1,111 @@
+const moviesModels = require('../models/movies_models')
+
+exports.getMovies = (req, res) => {
+  moviesModels.getMovies()
+    .then((result) => {
+      res.json({
+        data: result
+      })
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+exports.updateMovies = (req, res) => {
+  const id = req.params.id
+  const {
+    idMovie,
+    movieName,
+    directedBy,
+    duration,
+    casts,
+    synopsis,
+    genre
+  } = req.body
+
+  const data = {
+    idMovie,
+    movieName,
+    releaseDate: new Date(),
+    directedBy,
+    duration,
+    casts,
+    synopsis,
+    genre
+  }
+  moviesModels.updateMovies(id, data)
+    .then((result) => {
+      res.json({
+        data: result
+      })
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+
+exports.insertMovies = (req, res) => {
+  const {
+    idMovie,
+    movieName,
+    directedBy,
+    duration,
+    casts,
+    synopsis,
+    genre
+  } = req.body
+
+  const data = {
+    idMovie,
+    movieName,
+    releaseDate: new Date(),
+    directedBy,
+    duration,
+    casts,
+    synopsis,
+    genre
+  }
+  moviesModels.insertMovies(data)
+    .then((result) => {
+      res.json({
+        data: result
+      })
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+
+exports.deleteMovies = (req, res) => {
+  const idMovies = req.params.idMovie
+  moviesModels.deleteMovies(idMovies)
+    .then((result) => {
+      res.json({
+        data: result
+      })
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+
+exports.getMoviesById = (req, res) => {
+  const idMovie = req.params.idMovie
+  moviesModels.getMoviesById(idMovie)
+    .then((result) => {
+      res.json({
+        data: result
+      })
+    })
+}
+
+// get moviesName
+// exports.getMoviesBySearch = (req, res) => {
+//     const idMovie = req.params.param
+//     moviesModels.getMoviesBySearch(idMovie)
+//         .then((result) => {
+//             res.json({
+//                 data: result
+//             })
+//         })
+// }
