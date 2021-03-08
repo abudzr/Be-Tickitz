@@ -5,7 +5,7 @@ const movieController = require('../controllers/movies_controllers')
 router
   .get('/', movieController.getMovies)
   .get('/:idMovie', movieController.getMoviesById)
-// .get('/:param', movieController.getMoviesBySearch)
+  .get('/search/:param', movieController.getMoviesBySearch)
 
   .post('/', movieController.insertMovies)
   .put('/:id', movieController.updateMovies)

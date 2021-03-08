@@ -3,7 +3,9 @@ const transactionModels = require('../models/transactions_models')
 exports.getTransactions = (req, res) => {
   transactionModels.getTransactions()
     .then((result) => {
+      dataTransaction = result.length
       res.json({
+        dataTransaction,
         data: result
       })
     })

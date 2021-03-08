@@ -3,7 +3,9 @@ const ticketsModels = require('../models/tickets_models')
 exports.getTickets = (req, res) => {
   ticketsModels.getTickets()
     .then((result) => {
+      dataTicket = result.length
       res.json({
+        dataTicket,
         data: result
       })
     })

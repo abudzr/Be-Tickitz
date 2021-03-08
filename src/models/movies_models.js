@@ -2,9 +2,9 @@ const connection = require('../configs/db')
 
 const movies = {
   // get movies
-  getMovies: () => {
+  getMovies: (start, limit) => {
     return new Promise((resolve, reject) => {
-      connection.query('SELECT * FROM movie ORDER BY releaseDate DESC', (err, results) => {
+      connection.query(`SELECT * FROM movie ORDER BY releaseDate DESC limit ${start},${limit} `, (err, results) => {
         if (!err) {
           resolve(results)
         } else {
@@ -27,17 +27,17 @@ const movies = {
 
   //   get movies by movieName
   // SELECT * FROM `movie` WHERE movieName like 'sp%'
-  // getMoviesBySearch: () => {
-  //     return new Promise((resolve, reject) => {
-  //         connection.query('SELECT * FROM movie WHERE movieName like ?% ',id, (err, results) => {
-  //             if (!err) {
-  //                 resolve(results)
-  //             } else {
-  //                 reject(err)
-  //             }
-  //         })
-  //     })
-  // },
+  getMoviesBySearch: (data) => {
+    return new Promise((resolve, reject) => {
+      connection.query('SELECT * FROM movie WHERE movieName like ? ', `%${data}%`, (err, results) => {
+        if (!err) {
+          resolve(results)
+        } else {
+          reject(err)
+        }
+      })
+    })
+  },
 
   // insert data
   insertMovies: (data) => {

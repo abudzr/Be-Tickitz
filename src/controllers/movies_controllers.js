@@ -1,9 +1,16 @@
 const moviesModels = require('../models/movies_models')
 
 exports.getMovies = (req, res) => {
-  moviesModels.getMovies()
+  const page = parseInt(req.query.page)
+  const limit = parseInt(req.query.limit)
+  const start = (page - 1) * limit
+
+  moviesModels.getMovies(start, limit)
     .then((result) => {
+      listMovies = result.length
       res.json({
+        page,
+        listMovies,
         data: result
       })
     })
@@ -100,12 +107,12 @@ exports.getMoviesById = (req, res) => {
 }
 
 // get moviesName
-// exports.getMoviesBySearch = (req, res) => {
-//     const idMovie = req.params.param
-//     moviesModels.getMoviesBySearch(idMovie)
-//         .then((result) => {
-//             res.json({
-//                 data: result
-//             })
-//         })
-// }
+exports.getMoviesBySearch = (req, res) => {
+  const idMovie = req.params.param
+  moviesModels.getMoviesBySearch(idMovie)
+    .then((result) => {
+      res.json({
+        data: result
+      })
+    })
+}
