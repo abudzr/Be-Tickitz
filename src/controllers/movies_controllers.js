@@ -1,4 +1,5 @@
 const moviesModels = require('../models/movies_models')
+const helpers = require('../helpers/helper')
 
 exports.getMovies = (req, res) => {
   const page = parseInt(req.query.page)
@@ -15,7 +16,8 @@ exports.getMovies = (req, res) => {
       })
     })
     .catch((err) => {
-      console.log(err)
+      const error = new createError.InternalServerError()
+      next(error)
     })
 }
 exports.updateMovies = (req, res) => {
@@ -108,7 +110,7 @@ exports.getMoviesById = (req, res) => {
 
 // get moviesName
 exports.getMoviesBySearch = (req, res) => {
-  const idMovie = req.params.param
+  const idMovie = req.params.search
   moviesModels.getMoviesBySearch(idMovie)
     .then((result) => {
       res.json({

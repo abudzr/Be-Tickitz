@@ -1,14 +1,20 @@
 const usersModels = require('../models/users_models')
+const helpers = require('../helpers/helper')
+const createError = require('http-errors')
 
 exports.getUsers = (req, res) => {
   usersModels.getUsers()
     .then((result) => {
-      res.json({
-        data: result
-      })
+      const resultProduct = result
+      helpers.response(res, resultProduct, 200)
+      // res.json({
+      //   data: result
+      // })
     })
     .catch((err) => {
-      console.log(err)
+      const error = new createError.InternalServerError()
+      next(error)
+      // console.log(err)
     })
 }
 
