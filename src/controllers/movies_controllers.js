@@ -1,5 +1,5 @@
 const moviesModels = require('../models/movies_models')
-const helpers = require('../helpers/helper')
+const helper = require('../helpers/helper')
 
 exports.getMovies = (req, res) => {
   const page = parseInt(req.query.page)
@@ -8,18 +8,24 @@ exports.getMovies = (req, res) => {
 
   moviesModels.getMovies(start, limit)
     .then((result) => {
-      listMovies = result.length
-      res.json({
-        page,
-        listMovies,
-        data: result
-      })
+      helper(res, 200, true, "success", result);
     })
     .catch((err) => {
-      const error = new createError.InternalServerError()
-      next(error)
+      helper(res, 500, false, "Internal Server Error", err);
     })
 }
+
+exports.getMoviesAll = (req, res) => {
+  moviesModels.getMoviesAll()
+    .then((result) => {
+      helper(res, 200, true, "success", result);
+
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+
 exports.updateMovies = (req, res) => {
   const id = req.params.id
   const {
@@ -44,12 +50,10 @@ exports.updateMovies = (req, res) => {
   }
   moviesModels.updateMovies(id, data)
     .then((result) => {
-      res.json({
-        data: result
-      })
+      helper(res, 200, true, 'data has been updated', result);
     })
     .catch((err) => {
-      console.log(err)
+      console.log(err);
     })
 }
 
@@ -102,19 +106,31 @@ exports.getMoviesById = (req, res) => {
   const idMovie = req.params.idMovie
   moviesModels.getMoviesById(idMovie)
     .then((result) => {
-      res.json({
-        data: result
-      })
-    })
+      if (result.length > 0) {
+        // console.log(result.length);
+        if (result.length === 1) {
+          helper(res, 200, true, `${result.length} data found`, result);
+        } else {
+          helper(res, 200, true, `${result.length} data found`, result);
+        }
+      } else {
+        helper(res, 400, false, "movieId not found", null);
+      }
+    });
 }
+
+
+
 
 // get moviesName
 exports.getMoviesBySearch = (req, res) => {
-  const idMovie = req.params.search
+  // const name = req.query.name
+  const idMovie = req.params.param
   moviesModels.getMoviesBySearch(idMovie)
     .then((result) => {
-      res.json({
-        data: result
-      })
+      helper(res, 200, true, "success", result);
+    })
+    .catch((err) => {
+      helper(res, 404, false, err, null);
     })
 }

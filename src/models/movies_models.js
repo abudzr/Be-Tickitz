@@ -8,18 +8,30 @@ const movies = {
         if (!err) {
           resolve(results)
         } else {
-          reject(err)
+          reject(err.message)
         }
       })
     })
   },
+  getMoviesAll: () => {
+    return new Promise((resolve, reject) => {
+      connection.query('SELECT * FROM movie', (err, results) => {
+        if (!err) {
+          resolve(results)
+        } else {
+          reject(err.message)
+        }
+      })
+    })
+  },
+
   getMoviesById: (id) => {
     return new Promise((resolve, reject) => {
       connection.query('SELECT * FROM movie WHERE idMovie= ?', id, (err, results) => {
         if (!err) {
           resolve(results)
         } else {
-          reject(err)
+          reject(err.message)
         }
       })
     })
@@ -27,13 +39,13 @@ const movies = {
 
   //   get movies by movieName
   // SELECT * FROM `movie` WHERE movieName like 'sp%'
-  getMoviesBySearch: (data) => {
+  getMoviesBySearch: (name) => {
     return new Promise((resolve, reject) => {
-      connection.query('SELECT * FROM movie WHERE movieName like ? ', `%${data}%`, (err, results) => {
+      connection.query('SELECT * FROM movie WHERE movieName like ? ', `%${name}%`, (err, results) => {
         if (!err) {
           resolve(results)
         } else {
-          reject(err)
+          reject(err.message)
         }
       })
     })
@@ -46,7 +58,7 @@ const movies = {
         if (!err) {
           resolve(result)
         } else {
-          reject(err)
+          reject(err.message)
         }
       })
     })
@@ -59,7 +71,7 @@ const movies = {
         if (!err) {
           resolve(results)
         } else {
-          reject(err)
+          reject(err.message)
         }
       })
     })
@@ -72,7 +84,7 @@ const movies = {
         if (!err) {
           resolve(result)
         } else {
-          reject(err)
+          reject(err.message)
         }
       })
     })

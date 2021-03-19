@@ -1,20 +1,19 @@
 const usersModels = require('../models/users_models')
-const helpers = require('../helpers/helper')
+const helper = require('../helpers/helper')
 const createError = require('http-errors')
 
 exports.getUsers = (req, res) => {
   usersModels.getUsers()
     .then((result) => {
-      const resultProduct = result
-      helpers.response(res, resultProduct, 200)
+      helper(res, 200, true, "success", result);
       // res.json({
       //   data: result
       // })
     })
     .catch((err) => {
-      const error = new createError.InternalServerError()
-      next(error)
-      // console.log(err)
+      // const error = new createError.InternalServerError()
+      // next(error)
+      console.log(err)
     })
 }
 
@@ -24,7 +23,8 @@ exports.updateUsers = (req, res) => {
     idUsers,
     email,
     password,
-    fullName,
+    firstName,
+    lastName,
     phone
   } = req.body
 
@@ -32,7 +32,8 @@ exports.updateUsers = (req, res) => {
     idUsers,
     email,
     password,
-    fullName,
+    firstName,
+    lastName,
     phone
 
   }
@@ -48,19 +49,14 @@ exports.updateUsers = (req, res) => {
 }
 
 exports.insertUsers = (req, res) => {
-  const {
-    idUsers,
-    email,
-    password,
-    fullName,
-    phone
-  } = req.body
+  const { email, password, firstName, lastName, phone } = req.body
 
   const data = {
     idUsers,
     email,
     password,
-    fullName,
+    firstName,
+    lastName,
     phone
   }
   usersModels.insertUsers(data)
