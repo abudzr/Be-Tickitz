@@ -23,6 +23,7 @@ app.use('/tickets', ticketsRouter)
 app.use('/users', usersRouter)
 app.use('/movies', moviesRouter)
 app.use('/transactions', transactionsRouter)
+app.use('/img', express.static('./uploads'))
 
 app.use('*', (req, res, next) => {
   const error = new createError.NotFound()

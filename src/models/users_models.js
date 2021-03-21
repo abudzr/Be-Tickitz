@@ -3,9 +3,9 @@ const connection = require('../configs/db')
 const users = {
   // SELECT * FROM `users`
   // untuk menampilkan semua data
-  getUsers: () => {
+  findUsers: (email) => {
     return new Promise((resolve, reject) => {
-      connection.query('SELECT * FROM users', (err, results) => {
+      connection.query('SELECT * FROM users WHERE email= ?', email, (err, results) => {
         if (!err) {
           resolve(results)
         } else {
@@ -56,7 +56,7 @@ const users = {
   },
 
   // update data
-  updateUsers: (id, data) => {
+  updateUsers: (data, id) => {
     return new Promise((resolve, reject) => {
       connection.query('UPDATE users SET ? WHERE idUsers = ?', [data, id], (err, result) => {
         if (!err) {

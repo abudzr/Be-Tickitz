@@ -1,5 +1,6 @@
 const moviesModels = require('../models/movies_models')
 const helper = require('../helpers/helper')
+const { v4: uuidv4 } = require('uuid');
 
 exports.getMovies = (req, res) => {
   const page = parseInt(req.query.page)
@@ -29,7 +30,6 @@ exports.getMoviesAll = (req, res) => {
 exports.updateMovies = (req, res) => {
   const id = req.params.id
   const {
-    idMovie,
     movieName,
     directedBy,
     duration,
@@ -39,7 +39,6 @@ exports.updateMovies = (req, res) => {
   } = req.body
 
   const data = {
-    idMovie,
     movieName,
     releaseDate: new Date(),
     directedBy,
@@ -58,25 +57,18 @@ exports.updateMovies = (req, res) => {
 }
 
 exports.insertMovies = (req, res) => {
-  const {
-    idMovie,
-    movieName,
-    directedBy,
-    duration,
-    casts,
-    synopsis,
-    genre
-  } = req.body
+  const { movieName, directedBy, duration, casts, synopsis, genre } = req.body
 
   const data = {
-    idMovie,
+    idMovie: uuidv4(),
     movieName,
     releaseDate: new Date(),
     directedBy,
     duration,
     casts,
     synopsis,
-    genre
+    genre,
+    image: `http://localhost:8000/img/${req.file.filename}`
   }
   moviesModels.insertMovies(data)
     .then((result) => {
