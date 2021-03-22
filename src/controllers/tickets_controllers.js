@@ -1,4 +1,5 @@
 const ticketsModels = require('../models/tickets_models')
+const { v4: uuidv4 } = require('uuid');
 
 exports.getTickets = (req, res) => {
   ticketsModels.getTickets()

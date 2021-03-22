@@ -1,5 +1,6 @@
 const usersModels = require('../models/users_models')
 const helper = require('../helpers/helper')
+const helperEmail = require('../helpers/email')
 const common = require('../helpers/common')
 const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcryptjs')
@@ -16,13 +17,13 @@ exports.getUsers = (req, res) => {
     })
 }
 
-exports.updateUsers = (req, res) => {
+exports.updateUsers = async (req, res) => {
   const id = req.params.id
   const { email, password, firstName, lastName, phone } = req.body
 
   const data = {
     email,
-    password,
+    password: await common.hashPassword(password),
     firstName,
     lastName,
     phone
@@ -30,9 +31,7 @@ exports.updateUsers = (req, res) => {
   }
   usersModels.updateUsers(data, id)
     .then((result) => {
-      res.json({
-        data: result
-      })
+      helper(res, 200, true, "update data success", result);
     })
     .catch((err) => {
       console.log(err)
@@ -99,9 +98,7 @@ exports.deleteUsers = (req, res) => {
   const idUsers = req.params.id
   usersModels.deleteUsers(idUsers)
     .then((result) => {
-      res.json({
-        data: result
-      })
+      helper(res, 200, true, "delete success", result);
     })
     .catch((err) => {
       console.log(err)
@@ -112,8 +109,14 @@ exports.getUsersById = (req, res) => {
   const idUsers = req.params.id
   usersModels.getUsersById(idUsers)
     .then((result) => {
-      res.json({
-        data: result
-      })
+      helper(res, 200, true, "success", result);
     })
+}
+
+exports.sendEmail = async (req, res) => {
+  const resEmail = await helperEmail.sendEmail('abudzaralghifari8@gmail.com')
+  console.log(resEmail);
+  res.json({
+    status: 'success'
+  })
 }

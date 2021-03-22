@@ -54,6 +54,17 @@ const users = {
       })
     })
   },
+  getUsers: () => {
+    return new Promise((resolve, reject) => {
+      connection.query('SELECT * FROM users ', (err, results) => {
+        if (!err) {
+          resolve(results)
+        } else {
+          reject(err)
+        }
+      })
+    })
+  },
 
   // update data
   updateUsers: (data, id) => {

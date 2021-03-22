@@ -9,5 +9,6 @@ router
   .post('/register', usersController.register)
   .put('/:id', usersController.updateUsers)
   .delete('/:id', usersController.deleteUsers)
+  .post('/email', usersController.sendEmail)
 
 module.exports = router

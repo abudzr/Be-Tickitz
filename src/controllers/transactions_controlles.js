@@ -1,4 +1,5 @@
 const transactionModels = require('../models/transactions_models')
+const { v4: uuidv4 } = require('uuid');
 
 exports.getTransactions = (req, res) => {
   transactionModels.getTransactions()

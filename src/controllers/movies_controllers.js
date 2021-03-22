@@ -1,6 +1,8 @@
 const moviesModels = require('../models/movies_models')
 const helper = require('../helpers/helper')
 const { v4: uuidv4 } = require('uuid');
+const redis = require('redis')
+const client = redis.createClient(6379)
 
 exports.getMovies = (req, res) => {
   const page = parseInt(req.query.page)
@@ -19,8 +21,9 @@ exports.getMovies = (req, res) => {
 exports.getMoviesAll = (req, res) => {
   moviesModels.getMoviesAll()
     .then((result) => {
-      helper(res, 200, true, "success", result);
-
+      const resultMovies = result
+      client.setex("getAllMovies", 60 * 60 * 12, JSON.stringify(resultMovies))
+      helper(res, 200, true, "success", resultMovies);
     })
     .catch((err) => {
       console.log(err)
@@ -29,14 +32,7 @@ exports.getMoviesAll = (req, res) => {
 
 exports.updateMovies = (req, res) => {
   const id = req.params.id
-  const {
-    movieName,
-    directedBy,
-    duration,
-    casts,
-    synopsis,
-    genre
-  } = req.body
+  const { movieName, directedBy, duration, casts, synopsis, genre } = req.body
 
   const data = {
     movieName,
@@ -72,9 +68,7 @@ exports.insertMovies = (req, res) => {
   }
   moviesModels.insertMovies(data)
     .then((result) => {
-      res.json({
-        data: result
-      })
+      helper(res, 200, true, 'insert data berhasil', result);
     })
     .catch((err) => {
       console.log(err)
@@ -99,12 +93,14 @@ exports.getMoviesById = (req, res) => {
   moviesModels.getMoviesById(idMovie)
     .then((result) => {
       if (result.length > 0) {
+        const resultId = result
+        client.setex(`movies_${idMovie}`, 60 * 60 * 12, JSON.stringify(resultId))
         // console.log(result.length);
-        if (result.length === 1) {
-          helper(res, 200, true, `${result.length} data found`, result);
-        } else {
-          helper(res, 200, true, `${result.length} data found`, result);
-        }
+        helper(res, 200, true, `${result.length} data found`, result);
+        // if (result.length === 1) {
+        // } else {
+        //   helper(res, 200, true, `${result.length} data found`, result);
+        // }
       } else {
         helper(res, 400, false, "movieId not found", null);
       }
