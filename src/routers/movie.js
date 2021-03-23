@@ -4,6 +4,8 @@ const movieController = require('../controllers/movies_controllers')
 const auth = require('../middlewares/auth')
 const { uploadMulter } = require('../middlewares/multer')
 const { cacheAllMovies, clearAllMovies } = require('../middlewares/redis')
+const admin = require('../middlewares/admin')
+
 
 // const upload = multer({ dest: 'uploads/' })
 
@@ -13,8 +15,8 @@ router
   .get('/:idMovie', auth.verifyAccess, movieController.getMoviesById)
   .get('/search/:param', auth.verifyAccess, movieController.getMoviesBySearch)
   // .get('/', movieController.getMoviesBySearch)
-  .post('/', auth.verifyAccess, uploadMulter.single('image'), clearAllMovies, movieController.insertMovies)
-  .put('/:id', auth.verifyAccess, movieController.updateMovies)
-  .delete('/:idMovie', auth.verifyAccess, movieController.deleteMovies)
+  .post('/', auth.verifyAccess, admin.onlyAdmin, uploadMulter.single('image'), clearAllMovies, movieController.insertMovies)
+  .put('/:id', auth.verifyAccess, admin.onlyAdmin, uploadMulter.single('image'), movieController.updateMovies)
+  .delete('/:idMovie', auth.verifyAccess, admin.onlyAdmin, movieController.deleteMovies)
 
 module.exports = router

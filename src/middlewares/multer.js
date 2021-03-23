@@ -14,9 +14,9 @@ const upload = multer({
     limits: {
         // fields: 7,
         // fieldNameSize: 50, // TODO: Check if this size is enough
-        fieldSize: 2000, //TODO: Check if this size is enough
+        // fieldSize: 2000, //TODO: Check if this size is enough
         // TODO: Change this line after compression
-        // fileSize: 15000000, // 150 KB for a 1080x1080 JPG 90
+        fileSize: 5 * 1000 * 1000, // 4.76837158203125 MB for a 1080x1080 JPG 90
     },
     fileFilter: function (req, file, cb) {
         checkFileType(file, cb);

@@ -9,6 +9,7 @@ router
   .post('/register', usersController.register)
   .put('/:id', usersController.updateUsers)
   .delete('/:id', usersController.deleteUsers)
-  .post('/email', usersController.sendEmail)
+  .post('/auth/activate/:token', usersController.activationAccount)
+  .post('/passwordreset', usersController.resetpass)
 
 module.exports = router

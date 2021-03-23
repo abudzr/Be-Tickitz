@@ -20,8 +20,10 @@ exports.verifyAccess = (req, res, next) => {
                 return helper(res, 401, false, 'jwt not active', null)
             }
         }
-        console.log(decoded);
-        req.email = decoded.email
+        // console.log(decoded);
+        req.data = decoded
+        // req.role = decoded.role
+        // req.email = decoded.email
         next()
     });
 }

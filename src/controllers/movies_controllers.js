@@ -41,7 +41,8 @@ exports.updateMovies = (req, res) => {
     duration,
     casts,
     synopsis,
-    genre
+    genre,
+    image: `http://localhost:8000/img/${req.file.filename}`
   }
   moviesModels.updateMovies(id, data)
     .then((result) => {

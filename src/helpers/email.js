@@ -8,7 +8,55 @@ let transporter = nodemailer.createTransport({
         pass: process.env.EMAIL_PASSWORD, // generated ethereal password
     },
 });
-const sendEmail = (toEmail) => {
+
+const activationEmail = (toEmail, token) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let info = await transporter.sendMail({
+                from: 'akunjokiancoc@gmail.com', // sender address
+                to: toEmail, // list of receivers
+                subject: "Tickitz Account: Email address verification", // Subject line
+                html: `<!DOCTYPE html>
+                        <html lang="en">
+                        <head>
+                        <meta charset="UTF-8">
+                        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <title>Document</title>
+                        <style>
+
+                        </style>
+                        </head>
+                        <body>
+                            <div class="container">
+                            <img class="img" src="https://bookingtickitz.netlify.app/assets/img/logo2.png">
+                            <h2>Welcome to the Booking Tickitz account registration: wait, watch, wow! Please confirm!</h2>
+                            <p>You have registered a Booking Tickitz account with ${toEmail}. Please click link to continue verification account.</p>
+                            
+                            <p>If you can't click the link above, you can copy/paste the following link into your browser: ${process.env.URL}/users/auth/activate/${token}</p>
+                            
+                            <p>For security, the link will only be active for 24 hours. after 24 hours, you need to register again.</p>
+                            
+                            <p>If you have any other problems, or need additional support, please don't hesitate to contact us by email at support@bookingtickitz.com</p>
+                            
+                            <p>See you out on the Booking Tickitz!</p>
+                            
+                            <p>Copyright © 2021 Booking Tickitz Film, All rights reserved</p
+
+                            </div>
+                        </body>
+                        </html>`,
+            });
+            resolve(info)
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
+
+
+const resetpass = (toEmail) => {
     return new Promise(async (resolve, reject) => {
         try {
             let info = await transporter.sendMail({
@@ -25,8 +73,7 @@ const sendEmail = (toEmail) => {
                         <style>
                         .container{
                             border: 5px;
-                            margin-right: auto;
-                            margin-left: auto;
+                            
                         }
                         </style>
                         </head>
@@ -62,5 +109,6 @@ const sendEmail = (toEmail) => {
 }
 
 module.exports = {
-    sendEmail
+    resetpass,
+    activationEmail
 }
