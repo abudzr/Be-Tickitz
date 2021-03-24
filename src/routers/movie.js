@@ -6,7 +6,6 @@ const { uploadMulter } = require('../middlewares/multer')
 const { cacheAllMovies, clearAllMovies } = require('../middlewares/redis')
 const admin = require('../middlewares/admin')
 
-
 // const upload = multer({ dest: 'uploads/' })
 
 router

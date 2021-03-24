@@ -2,15 +2,14 @@ const usersModels = require('../models/users_models')
 const helper = require('../helpers/helper')
 const helperEmail = require('../helpers/email')
 const common = require('../helpers/common')
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require('uuid')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-
 
 exports.getUsers = (req, res) => {
   usersModels.getUsers()
     .then((result) => {
-      helper(res, 200, true, "success", result);
+      helper(res, 200, true, 'success', result)
     })
     .catch((err) => {
       console.log(err)
@@ -21,7 +20,7 @@ exports.getUsersById = (req, res) => {
   const idUsers = req.params.id
   usersModels.getUsersById(idUsers)
     .then((result) => {
-      helper(res, 200, true, "success", result);
+      helper(res, 200, true, 'success', result)
     })
 }
 
@@ -29,13 +28,12 @@ exports.deleteUsers = (req, res) => {
   const idUsers = req.params.id
   usersModels.deleteUsers(idUsers)
     .then((result) => {
-      helper(res, 200, true, "delete success", result);
+      helper(res, 200, true, 'delete success', result)
     })
     .catch((err) => {
       console.log(err)
     })
 }
-
 
 exports.updateUsers = async (req, res) => {
   const id = req.params.id
@@ -51,13 +49,12 @@ exports.updateUsers = async (req, res) => {
   }
   usersModels.updateUsers(data, id)
     .then((result) => {
-      helper(res, 200, true, "update data success", result);
+      helper(res, 200, true, 'update data success', result)
     })
     .catch((err) => {
       console.log(err)
     })
 }
-
 
 exports.login = async (req, res) => {
   try {
@@ -74,7 +71,7 @@ exports.login = async (req, res) => {
     if (!isValid) {
       return helper(res, 401, false, 'Email or Password is incorrect. Try again or click Forgot password to reset.')
     }
-    delete users.password;
+    delete users.password
 
     // lulus pengecekan
     // generet token
@@ -82,8 +79,7 @@ exports.login = async (req, res) => {
     jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '2h' }, function (err, token) {
       users.token = token
       return helper(res, 200, true, 'login success', users)
-    });
-
+    })
   } catch (error) {
     // console.log(error);
     return helper(res, 500, false, 'Internal Server Error')
@@ -147,7 +143,6 @@ exports.activationAccount = (req, res) => {
         // console.log(data);
         const resultInsert = usersModels.insertUsers(data)
         return helper(res, 200, true, 'signup success.', resultInsert)
-
       })
     } else {
       return helper(res, 400, false, 'Error in signup', null)
@@ -177,14 +172,10 @@ exports.forgotpass = async (req, res) => {
     const updatePass = await usersModels.updateUsers(data, users.idUsers)
 
     return helper(res, 200, true, 'email has been sent, please follow the instructions', resEmail)
-
   } catch (error) {
     return helper(res, 401, false, 'Incorrect or expired link', null)
   }
 }
-
-
-
 
 exports.resetpass = async (req, res) => {
   try {
@@ -203,19 +194,16 @@ exports.resetpass = async (req, res) => {
         }
 
         const data = {
-          password: await common.hashPassword(newPassword),
+          password: await common.hashPassword(newPassword)
         }
         // console.log(data);
         const resultUpdate = await usersModels.updateUsers(data, idUsers)
         return helper(res, 200, true, 'your password has been changed', resultUpdate)
       })
-
     } else {
       return helper(res, 401, false, 'Reset Password Error', null)
-
     }
   } catch (error) {
     return helper(res, 401, false, 'Authentication Error', null)
-
   }
 }

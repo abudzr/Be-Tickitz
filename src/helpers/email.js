@@ -1,22 +1,22 @@
-const nodemailer = require("nodemailer");
+const nodemailer = require('nodemailer')
 
-let transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    service: "Gmail",
-    auth: {
-        user: process.env.EMAIL_USER, // generated ethereal user
-        pass: process.env.EMAIL_PASSWORD, // generated ethereal password
-    },
-});
+const transporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com',
+  service: 'Gmail',
+  auth: {
+    user: process.env.EMAIL_USER, // generated ethereal user
+    pass: process.env.EMAIL_PASSWORD // generated ethereal password
+  }
+})
 
 const activationEmail = (toEmail, token) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            let info = await transporter.sendMail({
-                from: 'akunjokiancoc@gmail.com', // sender address
-                to: toEmail, // list of receivers
-                subject: "Tickitz Account: Email address verification", // Subject line
-                html: `<!DOCTYPE html>
+  return new Promise(async (resolve, reject) => {
+    try {
+      const info = await transporter.sendMail({
+        from: 'akunjokiancoc@gmail.com', // sender address
+        to: toEmail, // list of receivers
+        subject: 'Tickitz Account: Email address verification', // Subject line
+        html: `<!DOCTYPE html>
                         <html lang="en">
                         <head>
                         <meta charset="UTF-8">
@@ -45,25 +45,23 @@ const activationEmail = (toEmail, token) => {
 
                             </div>
                         </body>
-                        </html>`,
-            });
-            resolve(info)
-        } catch (error) {
-            reject(error)
-        }
-    })
+                        </html>`
+      })
+      resolve(info)
+    } catch (error) {
+      reject(error)
+    }
+  })
 }
 
-
-
 const resetpass = (toEmail, token) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            let info = await transporter.sendMail({
-                from: 'akunjokiancoc@gmail.com', // sender address
-                to: toEmail, // list of receivers
-                subject: "Tickitz: Password Reset", // Subject line
-                html: `<!DOCTYPE html>
+  return new Promise(async (resolve, reject) => {
+    try {
+      const info = await transporter.sendMail({
+        from: 'akunjokiancoc@gmail.com', // sender address
+        to: toEmail, // list of receivers
+        subject: 'Tickitz: Password Reset', // Subject line
+        html: `<!DOCTYPE html>
                         <html lang="en">
                         <head>
                         <meta charset="UTF-8">
@@ -99,16 +97,16 @@ const resetpass = (toEmail, token) => {
 
                             </div>
                         </body>
-                        </html>`,
-            });
-            resolve(info)
-        } catch (error) {
-            reject(error)
-        }
-    })
+                        </html>`
+      })
+      resolve(info)
+    } catch (error) {
+      reject(error)
+    }
+  })
 }
 
 module.exports = {
-    resetpass,
-    activationEmail
+  resetpass,
+  activationEmail
 }

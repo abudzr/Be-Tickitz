@@ -13,7 +13,6 @@ router
   .get('/filter/by', auth.verifyAccess, cinemasController.getcinemasFilter)
   .get('/sb/sort/by', auth.verifyAccess, cinemasController.getcinemasSort)
 
-
 // .get('/:name', cinemasController.getSearch)
 
 module.exports = router

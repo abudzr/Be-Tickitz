@@ -45,7 +45,7 @@ const movies = {
         if (!err) {
           resolve(results)
         } else {
-          reject("movie tidak ada")
+          reject('movie tidak ada')
         }
       })
     })

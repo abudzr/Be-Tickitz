@@ -1,5 +1,5 @@
 const ticketsModels = require('../models/tickets_models')
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require('uuid')
 const helper = require('../helpers/helper')
 
 exports.getTickets = (req, res) => {
@@ -30,7 +30,7 @@ exports.updateTickets = (req, res) => {
   }
   ticketsModels.updateTickets(id, data)
     .then((result) => {
-      helper(res, 200, true, 'data has been updated', result);
+      helper(res, 200, true, 'data has been updated', result)
     })
     .catch((err) => {
       console.log(err)
@@ -51,7 +51,7 @@ exports.insertTickets = (req, res) => {
   }
   ticketsModels.insertTickets(data)
     .then((result) => {
-      helper(res, 200, true, 'insert data berhasil', result);
+      helper(res, 200, true, 'insert data berhasil', result)
     })
     .catch((err) => {
       console.log(err)
@@ -62,7 +62,7 @@ exports.deleteTickets = (req, res) => {
   const id = req.params.id
   ticketsModels.deleteTickets(id)
     .then((result) => {
-      helper(res, 200, true, "delete success", result);
+      helper(res, 200, true, 'delete success', result)
     })
     .catch((err) => {
       console.log(err)

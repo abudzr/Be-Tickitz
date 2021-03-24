@@ -1,5 +1,5 @@
 const transactionModels = require('../models/transactions_models')
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require('uuid')
 const helper = require('../helpers/helper')
 
 exports.getTransactions = (req, res) => {
@@ -66,7 +66,7 @@ exports.insertTransactions = (req, res) => {
   }
   transactionModels.insertTransactions(data)
     .then((result) => {
-      helper(res, 200, true, 'insert data berhasil', result);
+      helper(res, 200, true, 'insert data berhasil', result)
     })
     .catch((err) => {
       console.log(err)
@@ -77,7 +77,7 @@ exports.deleteTransactions = (req, res) => {
   const idTransactions = req.params.id
   transactionModels.deleteTransactions(idTransactions)
     .then((result) => {
-      helper(res, 200, true, "delete success", result);
+      helper(res, 200, true, 'delete success', result)
     })
     .catch((err) => {
       console.log(err)
