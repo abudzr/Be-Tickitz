@@ -33,7 +33,7 @@ const activationEmail = (toEmail, token) => {
                             <h2>Welcome to the Booking Tickitz account registration: wait, watch, wow! Please confirm!</h2>
                             <p>You have registered a Booking Tickitz account with ${toEmail}. Please click link to continue verification account.</p>
                             
-                            <p>If you can't click the link above, you can copy/paste the following link into your browser: ${process.env.URL}/users/auth/activate/${token}</p>
+                            <p>If you can't click the link above, you can copy/paste the following link into your browser: ${process.env.URL_PUBLIC_ADDRESS}/users/auth/activate/${token}</p>
                             
                             <p>For security, the link will only be active for 24 hours. after 24 hours, you need to register again.</p>
                             
@@ -87,7 +87,7 @@ const resetpass = (toEmail, token) => {
                             
                             <p>We've received a password reset request for user ${toEmail}. If you made this request, please click here to continue to reset your password. This link will expire in one hour.</p>
                             
-                            <p>If you can't click the link above, you can copy/paste the following link into your browser: ${process.env.URL}/users/forgot-password/${token}</p>
+                            <p>If you can't click the link above, you can copy/paste the following link into your browser: ${process.env.URL_PUBLIC_ADDRESS}/users/forgot-password/${token}</p>
                             
                             <p>If you did not request a password reset, simply take no action, and this request will expire.</p>
                             
