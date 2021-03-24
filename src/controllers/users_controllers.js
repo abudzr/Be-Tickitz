@@ -17,6 +17,26 @@ exports.getUsers = (req, res) => {
     })
 }
 
+exports.getUsersById = (req, res) => {
+  const idUsers = req.params.id
+  usersModels.getUsersById(idUsers)
+    .then((result) => {
+      helper(res, 200, true, "success", result);
+    })
+}
+
+exports.deleteUsers = (req, res) => {
+  const idUsers = req.params.id
+  usersModels.deleteUsers(idUsers)
+    .then((result) => {
+      helper(res, 200, true, "delete success", result);
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+
+
 exports.updateUsers = async (req, res) => {
   const id = req.params.id
   const { email, password, firstName, lastName, phone } = req.body
@@ -37,6 +57,7 @@ exports.updateUsers = async (req, res) => {
       console.log(err)
     })
 }
+
 
 exports.login = async (req, res) => {
   try {
@@ -99,30 +120,9 @@ exports.register = async (req, res) => {
   }
 }
 
-
-exports.deleteUsers = (req, res) => {
-  const idUsers = req.params.id
-  usersModels.deleteUsers(idUsers)
-    .then((result) => {
-      helper(res, 200, true, "delete success", result);
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-}
-
-exports.getUsersById = (req, res) => {
-  const idUsers = req.params.id
-  usersModels.getUsersById(idUsers)
-    .then((result) => {
-      helper(res, 200, true, "success", result);
-    })
-}
-
 exports.activationAccount = (req, res) => {
   try {
     const { token } = req.params
-    // console.log(token);
     if (token) {
       jwt.verify(token, process.env.SECRET_KEY, async function (err, decoded) {
         if (err) {
@@ -157,14 +157,65 @@ exports.activationAccount = (req, res) => {
   }
 }
 
+exports.forgotpass = async (req, res) => {
+  try {
+    const { email } = req.body
+    const checkEmail = await usersModels.findUsers(email)
+    // console.log(checkEmail);
+    if (checkEmail.length == 0) {
+      return helper(res, 401, false, 'user with this email does not exists', checkEmail)
+    }
+    const users = checkEmail[0]
+    // console.log(users.idUsers);
+    const token = jwt.sign({ idUsers: users.idUsers }, process.env.RESET_PASSWORD_KEY, { expiresIn: '1h' })
+    // console.log(token);
+    const resEmail = await helperEmail.resetpass(email, token)
+
+    const data = {
+      reset: token
+    }
+    const updatePass = await usersModels.updateUsers(data, users.idUsers)
+
+    return helper(res, 200, true, 'email has been sent, please follow the instructions', resEmail)
+
+  } catch (error) {
+    return helper(res, 401, false, 'Incorrect or expired link', null)
+  }
+}
+
 
 
 
 exports.resetpass = async (req, res) => {
-  const email = req.body.email
-  const resEmail = await helperEmail.resetpass(email)
-  console.log(resEmail);
-  res.json({
-    status: 'success'
-  })
+  try {
+    const { reset, newPassword } = req.body
+    if (reset) {
+      jwt.verify(reset, process.env.RESET_PASSWORD_KEY, async function (err, decoded) {
+        if (err) {
+          return helper(res, 401, false, 'Incorrect or expired link', null)
+        }
+        const { idUsers } = decoded
+
+        const checkReset = await usersModels.findReset(reset)
+        // console.log(checkReset[0]);
+        if (checkReset.length == 0) {
+          return helper(res, 200, true, 'user with this email does not exists', checkReset)
+        }
+
+        const data = {
+          password: await common.hashPassword(newPassword),
+        }
+        // console.log(data);
+        const resultUpdate = await usersModels.updateUsers(data, idUsers)
+        return helper(res, 200, true, 'your password has been changed', resultUpdate)
+      })
+
+    } else {
+      return helper(res, 401, false, 'Reset Password Error', null)
+
+    }
+  } catch (error) {
+    return helper(res, 401, false, 'Authentication Error', null)
+
+  }
 }

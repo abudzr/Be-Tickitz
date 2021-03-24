@@ -56,7 +56,7 @@ const activationEmail = (toEmail, token) => {
 
 
 
-const resetpass = (toEmail) => {
+const resetpass = (toEmail, token) => {
     return new Promise(async (resolve, reject) => {
         try {
             let info = await transporter.sendMail({
@@ -87,7 +87,7 @@ const resetpass = (toEmail) => {
                             
                             <p>We've received a password reset request for user ${toEmail}. If you made this request, please click here to continue to reset your password. This link will expire in one hour.</p>
                             
-                            <p>If you can't click the link above, you can copy/paste the following link into your browser: https://bookingtickitz.com/passwordReset?</p>
+                            <p>If you can't click the link above, you can copy/paste the following link into your browser: ${process.env.URL}/users/forgot-password/${token}</p>
                             
                             <p>If you did not request a password reset, simply take no action, and this request will expire.</p>
                             

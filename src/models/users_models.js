@@ -14,6 +14,18 @@ const users = {
       })
     })
   },
+
+  findReset: (reset) => {
+    return new Promise((resolve, reject) => {
+      connection.query('SELECT * FROM users WHERE reset= ?', reset, (err, results) => {
+        if (!err) {
+          resolve(results)
+        } else {
+          reject(err)
+        }
+      })
+    })
+  },
   // untuk menampilkan data by id
   // SELECT * FROM `users` WHERE id=1
   getUsersById: (id) => {
