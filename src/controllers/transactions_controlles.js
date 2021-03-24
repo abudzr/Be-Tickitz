@@ -1,5 +1,6 @@
 const transactionModels = require('../models/transactions_models')
 const { v4: uuidv4 } = require('uuid');
+const helper = require('../helpers/helper')
 
 exports.getTransactions = (req, res) => {
   transactionModels.getTransactions()
@@ -18,7 +19,6 @@ exports.getTransactions = (req, res) => {
 exports.updateTransactions = (req, res) => {
   const id = req.params.id
   const {
-    idTransaction,
     idTickets,
     idUsers,
     paymentMethod,
@@ -28,7 +28,6 @@ exports.updateTransactions = (req, res) => {
   } = req.body
 
   const data = {
-    idTransaction,
     idTickets,
     idUsers,
     paymentMethod,
@@ -49,7 +48,6 @@ exports.updateTransactions = (req, res) => {
 
 exports.insertTransactions = (req, res) => {
   const {
-    idTransaction,
     idTickets,
     idUsers,
     paymentMethod,
@@ -58,7 +56,7 @@ exports.insertTransactions = (req, res) => {
   } = req.body
 
   const data = {
-    idTransaction,
+    idTransaction: uuidv4(),
     idTickets,
     idUsers,
     paymentMethod,
@@ -68,9 +66,7 @@ exports.insertTransactions = (req, res) => {
   }
   transactionModels.insertTransactions(data)
     .then((result) => {
-      res.json({
-        data: result
-      })
+      helper(res, 200, true, 'insert data berhasil', result);
     })
     .catch((err) => {
       console.log(err)
@@ -81,9 +77,7 @@ exports.deleteTransactions = (req, res) => {
   const idTransactions = req.params.id
   transactionModels.deleteTransactions(idTransactions)
     .then((result) => {
-      res.json({
-        data: result
-      })
+      helper(res, 200, true, "delete success", result);
     })
     .catch((err) => {
       console.log(err)

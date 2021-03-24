@@ -41,11 +41,11 @@ const movies = {
   // SELECT * FROM `movie` WHERE movieName like 'sp%'
   getMoviesBySearch: (name) => {
     return new Promise((resolve, reject) => {
-      connection.query('SELECT * FROM movie WHERE movieName like ? ', `%${name}%`, (err, results) => {
+      connection.query(`SELECT * FROM movie WHERE movieName LIKE '%${name}%'`, (err, results) => {
         if (!err) {
           resolve(results)
         } else {
-          reject(err.message)
+          reject("movie tidak ada")
         }
       })
     })

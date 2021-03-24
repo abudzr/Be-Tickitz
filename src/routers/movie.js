@@ -13,7 +13,7 @@ router
   .get('/', auth.verifyAccess, movieController.getMovies)
   .get('/all', auth.verifyAccess, cacheAllMovies, movieController.getMoviesAll)
   .get('/:idMovie', auth.verifyAccess, movieController.getMoviesById)
-  .get('/search/:param', auth.verifyAccess, movieController.getMoviesBySearch)
+  .get('/search/film', auth.verifyAccess, movieController.getMoviesBySearch)
   // .get('/', movieController.getMoviesBySearch)
   .post('/', auth.verifyAccess, admin.onlyAdmin, uploadMulter.single('image'), clearAllMovies, movieController.insertMovies)
   .put('/:id', auth.verifyAccess, admin.onlyAdmin, uploadMulter.single('image'), movieController.updateMovies)

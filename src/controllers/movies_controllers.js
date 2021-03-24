@@ -80,9 +80,7 @@ exports.deleteMovies = (req, res) => {
   const idMovies = req.params.idMovie
   moviesModels.deleteMovies(idMovies)
     .then((result) => {
-      res.json({
-        data: result
-      })
+      helper(res, 200, true, "delete success", result);
     })
     .catch((err) => {
       console.log(err)
@@ -113,9 +111,10 @@ exports.getMoviesById = (req, res) => {
 
 // get moviesName
 exports.getMoviesBySearch = (req, res) => {
-  // const name = req.query.name
-  const idMovie = req.params.param
-  moviesModels.getMoviesBySearch(idMovie)
+  const name = req.query.name
+  // const idMovie = req.params.param
+  moviesModels
+    .getMoviesBySearch(name)
     .then((result) => {
       helper(res, 200, true, "success", result);
     })
