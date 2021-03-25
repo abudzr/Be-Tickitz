@@ -121,10 +121,6 @@ npm start
 
 Object data contains content according to the request
 
-#### Preview Request By Postman
-
-![Preview](https://i.ibb.co/McdR01S/sample.png)
-
 ## ⛏️ Built Using
 
 - [ExpressJS](https://expressjs.com)
@@ -140,10 +136,6 @@ Object data contains content according to the request
 - [nodemailer](https://www.npmjs.com/package/nodemailer)
 - [redis](https://www.npmjs.com/package/redis)
 - [uuid](https://www.npmjs.com/package/uuid)
-
-## 💭 Documentation
-
-[Click Here](https://www.getpostman.com/collections/6b9dbd558d3e28e4e72d)
 
 ## ✍️ Authors
 
