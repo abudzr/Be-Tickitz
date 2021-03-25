@@ -98,7 +98,7 @@ HOST= #host/domain app
 Detail CONFIG GENERAL
 | EXAMPLE URL | [http://localhost:8000]() |
 | :-------------: |:-------------:|
-| PORT | 6000 |
+| PORT | 8000 |
 | HOST | [http://localhost]() |
 
 4. Done, You can run it in the way below
