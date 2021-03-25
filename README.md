@@ -27,16 +27,24 @@ This is the repository Backend of the Bootcamp Arkademy task
 
 #### Ticket Endpoint
 
-|  METHOD  |                      API                       |                    REMARKS                    |
-| :------: | :--------------------------------------------: | :-------------------------------------------: |
-|  `POST`  |                    /tickets                    |          Input Data To Table Ticket           |
-|  `GET`   | /tickets/details/movie/:userId&?movie=:movieId |        Get Ticket By userID & movieID         |
-|  `GET`   |         /tickets/details/user/:userId          |           Get All Ticket By userID            |
-|  `GET`   | /tickets/details/user/:userId?page=xx&limit=xx |     Get Ticket By userID With Pagination      |
-|  `GET`   |        /tickets/:userId?name=:movieName        | Get Ticket By userID With Spesific Movie Name |
-|  `GET`   |           /tickets?ticketId:ticketId           |            Get Ticket By ticketId             |
-|  `PUT`   |      /tickets/:userId?ticketId=:ticketId       |       Edit Ticket By userID & ticketID        |
-| `DELETE` |      /tickets/:userId?ticketId=:ticketId       |      Delete Ticket By userID & ticketID       |
+|  METHOD  |       API        |          REMARKS           |
+| :------: | :--------------: | :------------------------: |
+|  `POST`  |     /tickets     | Input Data To Table Ticket |
+|  `GET`   |     /tickets     |       Get All Ticket       |
+|  `GET`   | /tickets/:userId |    Get Ticket By userID    |
+|  `PUT`   | /tickets/:userId |   Edit Ticket By userID    |
+| `DELETE` | /tickets/:userId |  Delete Ticket By userID   |
+
+#### Cinemas Endpoint
+
+|  METHOD  |                        API                         |                      REMARKS                      |
+| :------: | :------------------------------------------------: | :-----------------------------------------------: |
+|  `POST`  |                      /cinemas                      |            Input Data To Table Cinemas            |
+|  `GET`   |                      /cinemas                      |                  Get All Cinemas                  |
+|  `GET`   |           /cinemas/filter/by?order=name            |                Get Cinemas orderby                |
+|  `GET`   | /cinemas/sb/sort/by?column=location&data=indonesia | Get Cinemas by column database & data in database |
+|  `PUT`   |                  /cinemas/:userId                  |              Edit Cinemas By userID               |
+| `DELETE` |                  /cinemas/:userId                  |             Delete Cinemas By userID              |
 
 ### Other endpoints are still in the documentation process
 
