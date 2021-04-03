@@ -3,6 +3,8 @@ const nodemailer = require('nodemailer')
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
   service: 'Gmail',
+  port: 465,
+  secure: true,
   auth: {
     user: process.env.EMAIL_USER, // generated ethereal user
     pass: process.env.EMAIL_PASSWORD // generated ethereal password
@@ -13,7 +15,7 @@ const activationEmail = (toEmail, token) => {
   return new Promise(async (resolve, reject) => {
     try {
       const info = await transporter.sendMail({
-        from: 'akunjokiancoc@gmail.com', // sender address
+        from: process.env.EMAIL_USER, // sender address
         to: toEmail, // list of receivers
         subject: 'Tickitz Account: Email address verification', // Subject line
         html: `<!DOCTYPE html>
@@ -32,8 +34,8 @@ const activationEmail = (toEmail, token) => {
                             <img class="img" src="https://bookingtickitz.netlify.app/assets/img/logo2.png">
                             <h2>Welcome to the Booking Tickitz account registration: wait, watch, wow! Please confirm!</h2>
                             <p>You have registered a Booking Tickitz account with ${toEmail}. Please click link to continue verification account.</p>
-                            
-                            <p>If you can't click the link above, you can copy/paste the following link into your browser: ${process.env.URL_PUBLIC_ADDRESS}/users/auth/activate/${token}</p>
+                            <a href="${process.env.URL}/users/auth/activate?token=${token}"> Click Here to Verification</a>
+                            <p>If you can't click the link above, you can copy/paste the following link into your browser: ${process.env.URL}/users/auth/activate?token=${token}</p>
                             
                             <p>For security, the link will only be active for 24 hours. after 24 hours, you need to register again.</p>
                             
@@ -58,7 +60,7 @@ const resetpass = (toEmail, token) => {
   return new Promise(async (resolve, reject) => {
     try {
       const info = await transporter.sendMail({
-        from: 'akunjokiancoc@gmail.com', // sender address
+        from: process.env.EMAIL_USER, // sender address
         to: toEmail, // list of receivers
         subject: 'Tickitz: Password Reset', // Subject line
         html: `<!DOCTYPE html>
@@ -84,8 +86,8 @@ const resetpass = (toEmail, token) => {
                             <p>Hi there,<p>
                             
                             <p>We've received a password reset request for user ${toEmail}. If you made this request, please click here to continue to reset your password. This link will expire in one hour.</p>
-                            
-                            <p>If you can't click the link above, you can copy/paste the following link into your browser: ${process.env.URL_PUBLIC_ADDRESS}/users/forgot-password/${token}</p>
+                            <a href="${process.env.URL_REACT}/new-password"> Click Here to Verification</a>
+                            <p>If you can't click the link above, you can copy/paste the following link into your browser: ${process.env.URL}/new-password</p>
                             
                             <p>If you did not request a password reset, simply take no action, and this request will expire.</p>
                             

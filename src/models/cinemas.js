@@ -1,11 +1,10 @@
 const connection = require('../configs/db')
 
 const cinemas = {
-  // SELECT * FROM `cinemas`
-  // untuk menampilkan semua data
+
   getcinemas: () => {
     return new Promise((resolve, reject) => {
-      connection.query('SELECT idCinemas, movie.movieName, movie.duration, movie.genre, name, location FROM cinemas INNER JOIN movie USING (idMovie)', (err, results) => {
+      connection.query('SELECT * FROM cinemas ', (err, results) => {
         if (!err) {
           resolve(results)
         } else {
@@ -17,7 +16,7 @@ const cinemas = {
   // untuk menampilkan data by id
   getcinemasById: (id) => {
     return new Promise((resolve, reject) => {
-      connection.query('SELECT idCinemas, movie.movieName, movie.duration, movie.genre, name, location FROM cinemas INNER JOIN movie USING (idMovie) WHERE idCinemas= ?', id, (err, results) => {
+      connection.query('SELECT * FROM cinemas WHERE idCinemas= ?', id, (err, results) => {
         if (!err) {
           resolve(results)
         } else {
@@ -28,7 +27,7 @@ const cinemas = {
   },
   getcinemasFilter: (order) => {
     return new Promise((resolve, reject) => {
-      connection.query(`SELECT idCinemas, movie.movieName, movie.duration, movie.genre, name, location FROM cinemas INNER JOIN movie USING (idMovie) ORDER BY ${order}`, (err, results) => {
+      connection.query(`SELECT * FROM cinemas  ORDER BY ${order}`, (err, results) => {
         if (!err) {
           resolve(results)
         } else {
@@ -40,7 +39,18 @@ const cinemas = {
 
   getcinemasSort: (column, data) => {
     return new Promise((resolve, reject) => {
-      connection.query(`SELECT idCinemas, movie.movieName, movie.duration, movie.genre, name, location FROM cinemas INNER JOIN movie USING (idMovie) WHERE ${column}=? `, data, (err, results) => {
+      connection.query(`SELECT * FROM cinemas WHERE ${column}=? `, data, (err, results) => {
+        if (!err) {
+          resolve(results)
+        } else {
+          reject(err)
+        }
+      })
+    })
+  },
+  getCinemaLocation: (location) => {
+    return new Promise((resolve, reject) => {
+      connection.query(`SELECT * FROM cinemas WHERE location LIKE "%${location}%" `, (err, results,) => {
         if (!err) {
           resolve(results)
         } else {
@@ -50,18 +60,21 @@ const cinemas = {
     })
   },
 
-  // untuk menambahkan data
-  insertcinemas: (data) => {
+
+  insertcinemas: (data = {}) => {
     return new Promise((resolve, reject) => {
-      connection.query('INSERT INTO cinemas SET ?', data, (err, result) => {
-        if (!err) {
-          resolve(result)
-        } else {
-          reject(err)
-        }
+      connection.query(`
+      INSERT INTO cinemas
+      (${Object.keys(data).join()})
+      VALUES
+      (${Object.values(data).map(item => `"${item}"`).join(',')})
+      `, (err, res, field) => {
+        if (err) reject(err)
+        resolve(res)
       })
     })
   },
+
 
   // menghapus data by id
   deletecinemas: (id) => {

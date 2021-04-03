@@ -89,7 +89,19 @@ const users = {
         }
       })
     })
+  },
+  verifiedAccount: (data, id) => {
+    return new Promise((resolve, reject) => {
+      connection.query('UPDATE users SET ? WHERE idUsers = ?', [data, id], (err, result) => {
+        if (!err) {
+          resolve(result)
+        } else {
+          reject(err)
+        }
+      })
+    })
   }
+
 }
 
 module.exports = users

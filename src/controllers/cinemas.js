@@ -1,5 +1,4 @@
-const cinemasModels = require('../models/cinemas_models')
-const { v4: uuidv4 } = require('uuid')
+const cinemasModels = require('../models/cinemas')
 const helper = require('../helpers/helper')
 
 exports.getcinemas = (req, res) => {
@@ -15,16 +14,19 @@ exports.getcinemas = (req, res) => {
 exports.updatecinemas = (req, res) => {
   const id = req.params.id
   const {
-    idMovie,
     name,
-    location
-
+    location,
+    adress,
+    price
   } = req.body
 
   const data = {
-    idMovie,
+    idCinemas,
     name,
-    location
+    location,
+    image: `http://localhost:8000/img/${req.file.filename}`,
+    adress,
+    price
   }
   cinemasModels.updatecinemas(id, data)
     .then((result) => {
@@ -37,20 +39,22 @@ exports.updatecinemas = (req, res) => {
 
 exports.insertcinemas = (req, res) => {
   const {
-    idMovie,
     name,
-    location
+    location,
+    adress,
+    price
   } = req.body
 
   const data = {
-    idCinemas: uuidv4(),
-    idMovie,
     name,
-    location
+    location,
+    image: `http://localhost:8000/img/${req.file.filename}`,
+    adress,
+    price
   }
   cinemasModels.insertcinemas(data)
     .then((result) => {
-      helper(res, 200, true, 'insert data berhasil', result)
+      helper(res, 200, true, 'Create data succes')
     })
     .catch((err) => {
       console.log(err)
@@ -80,7 +84,6 @@ exports.getcinemasById = (req, res) => {
 
 exports.getcinemasFilter = (req, res) => {
   const order = req.query.order
-  // const idMovie = req.params.param
   cinemasModels
     .getcinemasFilter(order)
     .then((result) => {
@@ -103,4 +106,19 @@ exports.getcinemasSort = (req, res) => {
     .catch((err) => {
       helper(res, 404, false, err, null)
     })
+}
+
+exports.getCinemaByLocation = async (req, res) => {
+  try {
+    const { location } = req.query
+    const results = await cinemasModels.getCinemaLocation(location)
+    console.log(results);
+    if (results.length > 0) {
+      return helper(res, 200, true, 'List of Location', results)
+    }
+    return helper(res, 404, false, 'Cinema Location Not Found')
+  } catch (error) {
+    return helper(res, 404, false, 'Bad Request')
+
+  }
 }

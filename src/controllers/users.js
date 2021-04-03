@@ -1,8 +1,8 @@
-const usersModels = require('../models/users_models')
+const usersModels = require('../models/users')
 const helper = require('../helpers/helper')
 const helperEmail = require('../helpers/email')
 const common = require('../helpers/common')
-const { v4: uuidv4 } = require('uuid')
+// const { v4: uuidv4 } = require('uuid')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
@@ -60,26 +60,33 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body
     const result = await usersModels.findUsers(email)
-    // console.log(result);
+    console.log(result);
     if (result.length === 0) {
       return helper(res, 401, false, 'Email or Password is incorrect. Try again or click Forgot password to reset.')
     }
     const users = result[0]
-    // console.log(users);
-    const isValid = await bcrypt.compare(password, users.password)
-    // console.log(isValid);
-    if (!isValid) {
-      return helper(res, 401, false, 'Email or Password is incorrect. Try again or click Forgot password to reset.')
-    }
-    delete users.password
+    // console.log(users.isVerified);
+    if (users.isVerified === 0) {
+      return helper(res, 401, false, 'Please Activation Your Email.')
+    } else {
+      const isValid = await bcrypt.compare(password, users.password)
+      // console.log(isValid);
+      if (!isValid) {
+        return helper(res, 401, false, 'Email or Password is incorrect. Try again or click Forgot password to reset.')
+      }
+      delete users.password
 
-    // lulus pengecekan
-    // generet token
-    const payload = { email: users.email, role: users.role, firstName: users.firstName, lastName: users.lastName }
-    jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '2h' }, function (err, token) {
-      users.token = token
-      return helper(res, 200, true, 'login success', users)
-    })
+      // lulus pengecekan
+      // generet token
+      const payload = { idUsers: users.idUsers, email: users.email, role: users.role, firstName: users.firstName, lastName: users.lastName }
+      jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '2h' }, function (err, token) {
+        users.token = token
+        return helper(res, 200, true, 'login success', users)
+      })
+    }
+
+    // console.log(users);
+
   } catch (error) {
     // console.log(error);
     return helper(res, 500, false, 'Internal Server Error')
@@ -92,23 +99,24 @@ exports.register = async (req, res) => {
     const result = await usersModels.findUsers(email)
     // console.log(result);
     if (result.length !== 0) {
-      return helper(res, 200, true, 'user with this email already exists', null)
+      return helper(res, 401, false, 'user with this email already exists', null)
     }
 
-    const token = jwt.sign({ email, password, firstName, lastName, phone }, process.env.SECRET_KEY, { expiresIn: '1d' })
+    const token = jwt.sign({ email, firstName, lastName }, process.env.SECRET_KEY, { expiresIn: '1d' })
 
     const resEmail = await helperEmail.activationEmail(email, token)
     // console.log(resEmail);
 
-    // const data = {
-    //   idUsers: uuidv4(),
-    //   email,
-    //   password: await common.hashPassword(password),
-    //   firstName,
-    //   lastName,
-    //   phone
-    // }
-    // const resultInsert = await usersModels.insertUsers(data)
+    const data = {
+      email,
+      password: await common.hashPassword(password),
+      firstName,
+      lastName,
+      phone,
+      image: `http://localhost:8000/img/${req.file.filename}`
+
+    }
+    const resultInsert = await usersModels.insertUsers(data)
     return helper(res, 200, true, 'email has been sent, kindly activate your account.', resEmail)
   } catch (error) {
     // console.log(error);
@@ -118,31 +126,24 @@ exports.register = async (req, res) => {
 
 exports.activationAccount = (req, res) => {
   try {
-    const { token } = req.params
+    const { token } = req.query
     if (token) {
       jwt.verify(token, process.env.SECRET_KEY, async function (err, decoded) {
         if (err) {
           return helper(res, 401, false, 'Incorrect or expired link', null)
         }
-        const { email, password, firstName, lastName, phone } = decoded
 
-        const result = await usersModels.findUsers(email)
-        // console.log(result);
-        if (result.length !== 0) {
-          return helper(res, 200, true, 'user with this email already exists', result)
-        }
-
+        // console.log(token);
+        const { email } = decoded
+        const checkEmail = await usersModels.findUsers(email)
+        const users = checkEmail[0]
+        const id = users.idUsers
         const data = {
-          idUsers: uuidv4(),
-          email,
-          password: await common.hashPassword(password),
-          firstName,
-          lastName,
-          phone
+          isVerified: 1
         }
-        // console.log(data);
-        const resultInsert = usersModels.insertUsers(data)
-        return helper(res, 200, true, 'signup success.', resultInsert)
+        const resultUpdate = await usersModels.updateUsers(data, id)
+        return res.redirect(`${process.env.URL_REACT}/signin`)
+        // return helper(res, 200, true, 'You have been succesfully activated. You can login now!', null)
       })
     } else {
       return helper(res, 400, false, 'Error in signup', null)
@@ -171,7 +172,7 @@ exports.forgotpass = async (req, res) => {
     }
     const updatePass = await usersModels.updateUsers(data, users.idUsers)
 
-    return helper(res, 200, true, 'email has been sent, please follow the instructions', resEmail)
+    return helper(res, 200, true, 'Email Has Been Sent, Please Follow The Instructions', resEmail)
   } catch (error) {
     return helper(res, 401, false, 'Incorrect or expired link', null)
   }
@@ -179,7 +180,8 @@ exports.forgotpass = async (req, res) => {
 
 exports.resetpass = async (req, res) => {
   try {
-    const { reset, newPassword } = req.body
+    const { reset } = req.query
+    const { password } = req.body
     if (reset) {
       jwt.verify(reset, process.env.RESET_PASSWORD_KEY, async function (err, decoded) {
         if (err) {
@@ -194,7 +196,7 @@ exports.resetpass = async (req, res) => {
         }
 
         const data = {
-          password: await common.hashPassword(newPassword)
+          password: await common.hashPassword(password)
         }
         // console.log(data);
         const resultUpdate = await usersModels.updateUsers(data, idUsers)
