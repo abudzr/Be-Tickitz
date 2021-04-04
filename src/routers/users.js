@@ -8,7 +8,7 @@ const admin = require('../middlewares/admin')
 router
   .get('/', usersController.getUsers)
   .get('/:id', usersController.getUsersById)
-  .put('/:id', uploadMulter.single('image'), usersController.updateUsers)
+  .patch('/:id', uploadMulter.single('image'), usersController.updateUsers)
   .delete('/:id', usersController.deleteUsers)
 
   .post('/login', usersController.login)

@@ -38,14 +38,15 @@ exports.deleteUsers = (req, res) => {
 exports.updateUsers = async (req, res) => {
   const id = req.params.id
   const { email, password, firstName, lastName, phone } = req.body
-
+  console.log(req);
+  const initialResult = await usersModels.getUsersById(id)
   const data = {
     email,
     password: await common.hashPassword(password),
     firstName,
     lastName,
-    phone
-
+    phone,
+    image: req.file === undefined ? initialResult[0].image : `http://localhost:8000/img/${req.file.filename}`
   }
   usersModels.updateUsers(data, id)
     .then((result) => {

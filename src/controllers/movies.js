@@ -225,23 +225,16 @@ exports.updateMovie = async (req, res) => {
     }
 
     const initialResult = await moviesModels.getMovieById(id)
+    console.log(initialResult);
     const data = {
-      movieName,
-      releaseDate,
-      directedBy,
-      duration,
-      casts,
-      synopsis,
-      image: `http://localhost:8000/img/${req.file.filename}`,
-      category
-      // name: name === undefined ? initialResult[0].name : name,
-      // image: req.file === undefined ? initialResult[0].image : req.file.filename,
-      // releaseDate: releaseDate === undefined ? initialResult[0].releaseDate : releaseDate,
-      // category: category === undefined ? initialResult[0].category : category,
-      // directed: directed === undefined ? initialResult[0].directed : directed,
-      // duration: duration === undefined ? initialResult[0].duration : duration,
-      // casts: casts === undefined ? initialResult[0].casts : casts,
-      // description: description === undefined ? initialResult[0].description : description
+      movieName: movieName === undefined ? initialResult[0].movieName : movieName,
+      releaseDate: releaseDate === undefined ? initialResult[0].releaseDate : releaseDate,
+      directedBy: directedBy === undefined ? initialResult[0].directedBy : directedBy,
+      duration: duration === undefined ? initialResult[0].duration : duration,
+      casts: casts === undefined ? initialResult[0].casts : casts,
+      synopsis: synopsis === undefined ? initialResult[0].synopsis : synopsis,
+      image: req.file === undefined ? initialResult[0].image : `http://localhost:8000/img/${req.file.filename}`,
+      category: category === undefined ? initialResult[0].category : category
     }
     const initialSplit = initialResult[0].image.split('/');
     // console.log(initialSplit[4]);
