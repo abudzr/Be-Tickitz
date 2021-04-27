@@ -8,7 +8,6 @@ module.exports = {
             duration: Joi.required(),
             casts: Joi.string().min(3).required(),
             synopsis: Joi.exist(),
-            category: Joi.required(),
             idGenre: Joi.required()
         })
         return schema.validate(movie)

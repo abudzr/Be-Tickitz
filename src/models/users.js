@@ -14,18 +14,65 @@ const users = {
       })
     })
   },
-
-  findReset: (reset) => {
+  findToken: (token) => {
     return new Promise((resolve, reject) => {
-      connection.query('SELECT * FROM users WHERE reset= ?', reset, (err, results) => {
-        if (!err) {
-          resolve(results)
-        } else {
-          reject(err)
+      connection.query(
+        "SELECT token FROM user_token WHERE token = ?",
+        token,
+        (err, result) => {
+          if (!err) {
+            resolve(result);
+          } else {
+            reject(new Error("Internal server error"));
+          }
         }
-      })
-    })
+      );
+    });
   },
+  deleteToken: (email) => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        "DELETE FROM user_token WHERE email = ?",
+        email,
+        (err, result) => {
+          if (!err) {
+            resolve(result);
+          } else {
+            reject(new Error("Internal server error"));
+          }
+        }
+      );
+    });
+  },
+
+  // findReset: (reset) => {
+  //   return new Promise((resolve, reject) => {
+  //     connection.query('SELECT * FROM users WHERE reset= ?', reset, (err, results) => {
+  //       if (!err) {
+  //         resolve(results)
+  //       } else {
+  //         reject(err)
+  //       }
+  //     })
+  //   })
+  // },
+  setPassword: (password, email) => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        "UPDATE users SET password = ? WHERE email = ?",
+        [password, email],
+        (err, result) => {
+          if (!err) {
+            resolve(result);
+          } else {
+            reject(new Error("Internal server error"));
+          }
+        }
+      );
+    });
+  },
+
+
   // untuk menampilkan data by id
   // SELECT * FROM `users` WHERE id=1
   getUsersById: (id) => {
@@ -100,6 +147,17 @@ const users = {
         }
       })
     })
+  },
+  createUsersToken: (data) => {
+    return new Promise((resolve, reject) => {
+      connection.query("INSERT INTO user_token SET ?", data, (err, result) => {
+        if (!err) {
+          resolve(result);
+        } else {
+          reject(new Error("Internal server error"));
+        }
+      });
+    });
   }
 
 }

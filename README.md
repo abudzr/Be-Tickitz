@@ -96,9 +96,9 @@ HOST= #host/domain app
 ```
 
 Detail CONFIG GENERAL
-| EXAMPLE URL | [http://localhost:8000]() |
+| EXAMPLE URL | [http://localhost:8080]() |
 | :-------------: |:-------------:|
-| PORT | 8000 |
+| PORT | 8080 |
 | HOST | [http://localhost]() |
 
 4. Done, You can run it in the way below
@@ -148,3 +148,8 @@ Object data contains content according to the request
 ## ✍️ Authors
 
 - [@abudzr](https://github.com/abudzr)
+
+## Link
+
+- [Frontend](https://github.com/abudzr/Week5-ReactTickitz)
+- [Visit Project](https://bookingtickitz.herokuapp.com/)

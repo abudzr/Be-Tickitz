@@ -7,6 +7,7 @@ const admin = require('../middlewares/admin')
 
 router
   .get('/', usersController.getUsers)
+  .get('/email', usersController.getUsersbyEmail)
   .get('/:id', usersController.getUsersById)
   .patch('/:id', uploadMulter.single('image'), usersController.updateUsers)
   .delete('/:id', usersController.deleteUsers)
@@ -16,6 +17,6 @@ router
   .get('/auth/activate', usersController.activationAccount)
 
   .post('/forgot-password', usersController.forgotpass)
-  .post('/password-reset', usersController.resetpass)
+  .put('/password-reset', usersController.resetpass)
 
 module.exports = router

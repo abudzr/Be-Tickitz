@@ -86,7 +86,7 @@ const resetpass = (toEmail, token) => {
                             <p>Hi there,<p>
                             
                             <p>We've received a password reset request for user ${toEmail}. If you made this request, please click here to continue to reset your password. This link will expire in one hour.</p>
-                            <a href="${process.env.URL_REACT}/new-password"> Click Here to Verification</a>
+                            <a href="${process.env.URL}/new-password"> Click Here to Verification</a>
                             <p>If you can't click the link above, you can copy/paste the following link into your browser: ${process.env.URL}/new-password</p>
                             
                             <p>If you did not request a password reset, simply take no action, and this request will expire.</p>
