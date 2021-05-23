@@ -49,17 +49,33 @@ exports.deleteUsers = (req, res) => {
 exports.updateUsers = async (req, res) => {
   const id = req.params.id
   const { email, password, firstName, lastName, phone } = req.body
-  console.log(req);
+  // console.log(req);
   const initialResult = await usersModels.getUsersById(id)
+  // : req.file === undefined ? initialResult[0].image : `http://localhost:8000/img/${req.file.filename}`
   const data = {
     email,
     password: password === undefined ? initialResult[0].password : await common.hashPassword(password),
     firstName,
     lastName,
-    phone,
-    image: req.file === undefined ? initialResult[0].image : `http://localhost:8000/img/${req.file.filename}`
+    phone
+    // image
   }
-  usersModels.updateUsers(data, id)
+  usersModels
+    .findUser(id, "update")
+    .then((result) => {
+      let image;
+      if (!req.file) {
+        image = result[0].image;
+      } else {
+        const oldImage = result[0].image;
+        if (oldImage !== "images\\avatar.png") {
+          removeImage(oldImage);
+        }
+        image = req.file.path;
+      }
+      data.image = image;
+      return usersModels.updateUsers(data, id)
+    })
     .then((result) => {
       helper(res, 200, true, 'update data success', result)
     })
@@ -72,7 +88,7 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body
     const result = await usersModels.findUsers(email)
-    console.log(result);
+    // console.log(result);
     if (result.length === 0) {
       return helper(res, 401, false, 'Email or Password is incorrect. Try again or click Forgot password to reset.')
     }
@@ -107,29 +123,37 @@ exports.login = async (req, res) => {
 
 exports.register = async (req, res) => {
   try {
-    const { email, password, firstName, lastName, phone } = req.body
-    const result = await usersModels.findUsers(email)
-    // console.log(result);
-    if (result.length !== 0) {
-      return helper(res, 401, false, 'user with this email already exists', null)
+    let image;
+    if (!req.file) {
+      image = "images\\avatar.png";
+    } else {
+      image = req.file.path;
     }
 
-    const token = jwt.sign({ email, firstName, lastName }, process.env.SECRET_KEY, { expiresIn: '1d' })
-
-    const resEmail = await helperEmail.activationEmail(email, token)
-    // console.log(resEmail);
+    const {
+      email,
+      password
+    } = req.body;
 
     const data = {
       email,
       password: await common.hashPassword(password),
-      firstName,
-      lastName,
-      phone
-      // image: `http://localhost:8000/img/${req.file.filename}`
-
+      firstName: null,
+      lastName: null,
+      phone: null,
+      image
+      // isActive: false,
+      // role: 2
+    };
+    const result = await usersModels.findUsers(email)
+    if (result.length !== 0) {
+      return helper(res, 401, false, 'user with this email already exists', null)
     }
-    const resultInsert = await usersModels.insertUsers(data)
-    return helper(res, 200, true, 'email has been sent, kindly activate your account.', resEmail)
+
+    const token = jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: '1d' })
+    await usersModels.insertUsers(data)
+    await helperEmail.activationEmail(email, token)
+    return helper(res, 200, true, 'email has been sent, kindly activate your account.', data)
   } catch (error) {
     // console.log(error);
     return helper(res, 400, false, 'Error in signup', null)
@@ -145,7 +169,6 @@ exports.activationAccount = (req, res) => {
           return helper(res, 401, false, 'Incorrect or expired link', null)
         }
 
-        // console.log(token);
         const { email } = decoded
         const checkEmail = await usersModels.findUsers(email)
         const users = checkEmail[0]
@@ -153,7 +176,7 @@ exports.activationAccount = (req, res) => {
         const data = {
           isVerified: 1
         }
-        const resultUpdate = await usersModels.updateUsers(data, id)
+        await usersModels.updateUsers(data, id)
         return res.redirect(`${process.env.URL_REACT}/verification`)
         // return helper(res, 200, true, 'You have been succesfully activated. You can login now!', null)
       })

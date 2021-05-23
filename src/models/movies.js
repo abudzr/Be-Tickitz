@@ -1,3 +1,4 @@
+const { query } = require('express')
 const connection = require('../configs/db')
 
 const movies = {
@@ -20,6 +21,17 @@ const movies = {
     })
   },
 
+  countMovie: () => {
+    return new Promise((resolve, reject) => {
+      connection.query(`SELECT COUNT(*) AS totalData FROM movie`, (err, results) => {
+        if (!err) {
+          resolve(results)
+        } else {
+          reject(err.message)
+        }
+      })
+    })
+  },
   getMoviesAll: () => {
     return new Promise((resolve, reject) => {
       connection.query('SELECT * FROM movie', (err, results) => {
@@ -49,7 +61,17 @@ const movies = {
       console.log(query.sql)
     })
   },
-
+  getCountMovieCondition: (cond, status) => {
+    return new Promise((resolve, reject) => {
+      const query = connection.query(`SELECT COUNT(*) as totalData FROM
+      movie WHERE movieName LIKE "%${cond.search}%" ${status ? `AND status = '${status}'` : ''}
+      ORDER BY ${cond.sort} ${cond.order}`, (err, res, field) => {
+        if (err) reject(err)
+        resolve(res)
+      })
+      console.log(query.sql)
+    })
+  },
   getCountMovieCondition: (cond, status) => {
     return new Promise((resolve, reject) => {
       const query = connection.query(`SELECT COUNT(*) as totalData FROM

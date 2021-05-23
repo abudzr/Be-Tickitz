@@ -44,13 +44,15 @@ exports.listCinemaShowtime = async (req, res) => {
             const mapIdCinema = resultSearch.map(item => item.idCinemas)
             const cinema = await showtimeModel.getCinema([...new Set(mapIdCinema)])
             const showtime = await showtimeModel.getShowtime(mapShowtime)
-            // console.log(showtime)
-            const hash = Object.create(null)
-            // console.log(hash);
-            const result = cinema.map(((hash) => (cinema) => (hash[cinema.id] = { id: cinema.idCinemas, name: cinema.name, image: cinema.image, location: cinema.location, address: cinema.adress, price: cinema.price, showtime: [] }))(hash))
-            showtime.forEach((hash => showtime => hash[showtime.idCinema].showtime.push({ id: showtime.id, name: showtime.showtime }))(hash))
+            // console.log(cinema);
+            const data = cinema.map((item) => {
+                return { id: item.idCinemas, name: item.name, image: item.image, location: item.location, address: item.adress, price: item.price, showtime: showtime.filter((itemShowtime) => itemShowtime.idCinemas === item.idCinemas) }
+            })
+            // const hash = Object.create(null)
+            // const result = cinema.map(((hash) => (cinema) => (hash[cinema.id] = { id: cinema.idCinemas, name: cinema.name, image: cinema.image, location: cinema.location, address: cinema.adress, price: cinema.price, showtime: [] }))(hash))
+            // showtime.forEach((hash => showtime => hash[showtime.idCinema].showtime.push({ id: showtime.id, idCinemas: showtime.idCinemas, time: showtime.showtime }))(hash))
 
-            return helper(res, 200, true, 'List of Cinema Showtime', result)
+            return helper(res, 200, true, 'List of Cinema Showtime', data)
         }
         return helper(res, 404, false, `Location ${search}, ShowtimeDate ${date}, and idMovie ${idMovie} not exists`)
     } catch (error) {

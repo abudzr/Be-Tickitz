@@ -5,6 +5,7 @@ const port = process.env.PORT
 const cors = require('cors')
 const morgan = require('morgan')
 const createError = require('http-errors')
+const path = require("path");
 // const bodyParser = require('body-parser')
 const cinemasRouter = require('./src/routers/cinemas')
 const showtimesRouter = require('./src/routers/showTimes')
@@ -29,7 +30,7 @@ app.use('/genre', genreRouter)
 app.use('/seats', seatsRouter)
 app.use('/showTimes', showtimesRouter)
 app.use('/transactions', transactionsRouter)
-app.use('/img', express.static('./uploads'))
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 app.use('*', (req, res, next) => {
   const error = new createError.NotFound()

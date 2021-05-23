@@ -14,6 +14,21 @@ const users = {
       })
     })
   },
+  findUser: (id, message) => {
+    return new Promise((resolve, reject) => {
+      connection.query("SELECT * FROM users WHERE id = ?", id, (err, result) => {
+        if (!err) {
+          if (result.length == 1) {
+            resolve(result);
+          } else {
+            reject(new Error(`Cannot ${message} users with id = ${id}`));
+          }
+        } else {
+          reject(new Error("Internal server error"));
+        }
+      });
+    })
+  },
   findToken: (token) => {
     return new Promise((resolve, reject) => {
       connection.query(

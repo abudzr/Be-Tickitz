@@ -19,9 +19,20 @@ exports.listMovies = async (req, res) => {
     cond.offset = (cond.page * cond.limit) - cond.limit
     cond.sort = cond.sort || 'id'
     cond.order = cond.order || 'ASC'
-
     const results = await moviesModels.getMoviesByCondition(cond)
-    return helper(res, 200, true, 'List of all Movies', results)
+
+    const totalData = await moviesModels.countMovie()
+    const totalPage = Math.ceil(Number(totalData[0].totalData) / cond.limit)
+    return helper(res, 200, true, 'List of all Movies', results,
+      {
+        totalData: results.length,
+        currentPage: cond.page,
+        totalPage,
+        nextLink: cond.page < totalPage ? `${URL}/movies?${qs.stringify({ ...req.query, ...{ page: cond.page + 1 } })}` : null,
+        prevLink: cond.page > 1 ? `${URL}/movies?${qs.stringify({ ...req.query, ...{ page: cond.page - 1 } })}` : null
+      }
+    )
+    // return helper(res, 200, true, 'List of all Movies', results)
   } catch (error) {
     console.log(error)
     return helper(res, 400, false, 'Bad Request')
@@ -134,13 +145,20 @@ exports.getMovieUpComing = async (req, res) => {
 
 exports.insertMovies = async (req, res) => {
   const valid = validation.validationMovie(req.body)
-
   if (valid.error) {
     return helper(res, 400, false, valid.error.details[0].message)
   }
 
   try {
     const { movieName, releaseDate, directedBy, duration, casts, synopsis, category } = req.body
+    // let image;
+    console.log(req.file);
+    // if (!req.file) {
+    //   helper.printError(res, 400, "Image is required");
+    //   return;
+    // } else {
+    //   image = {`${req.file.filename}`};
+    // }
     const data = {
       movieName,
       releaseDate,
@@ -148,7 +166,7 @@ exports.insertMovies = async (req, res) => {
       duration,
       casts,
       synopsis,
-      image: `http://localhost:8000/img/${req.file.filename}`,
+      image: `images\\\\${req.file.filename}`,
       category
     }
     const { idGenre } = req.body
@@ -173,7 +191,6 @@ exports.insertMovies = async (req, res) => {
         })
       }
     }
-
     const date = new Date()
     let initialResult
     const splitReleaseDate = data.releaseDate.split('-')
@@ -233,13 +250,12 @@ exports.updateMovie = async (req, res) => {
       duration: duration === undefined ? initialResult[0].duration : duration,
       casts: casts === undefined ? initialResult[0].casts : casts,
       synopsis: synopsis === undefined ? initialResult[0].synopsis : synopsis,
-      image: req.file === undefined ? initialResult[0].image : `http://localhost:8000/img/${req.file.filename}`,
+      image: req.file === undefined ? initialResult[0].image : `images\\\\${req.file.filename}`,
       category: category === undefined ? initialResult[0].category : category
     }
     const initialSplit = initialResult[0].image.split('/');
-    // console.log(initialSplit[4]);
     if (initialResult.length > 0) {
-      fs.unlink(`week-4/tickitz.id/../../uploads/${initialSplit[4]}`,
+      fs.unlink(`${initialSplit[0]}`,
         function (err) {
           if (err) {
             console.log('something wrong');
@@ -273,7 +289,7 @@ exports.updateMovie = async (req, res) => {
         return helper(res, 200, true, `Movie id ${id} updated successfully`, { ...initialResult[0], ...data })
       }
     } else {
-      return helper(res, 400, false, `Failed to update movie id ${id}`)
+      return helper(res, 400, false, `Failed to update movie id ${id} `)
     }
   } catch (error) {
     return helper(res, 400, false, 'Bad Request')
@@ -288,7 +304,7 @@ exports.deleteMovies = async (req, res) => {
     const initialSplit = initialResult[0].image.split('/');
     // console.log(initialSplit[4]);
     if (initialResult.length > 0) {
-      fs.unlink(`week-4/tickitz.id/../../uploads/${initialSplit[4]}`,
+      fs.unlink(`week - 4 / tickitz.id /../../ images / ${initialSplit[4]} `,
         function (err) {
           if (err) {
             console.log('something wrong');
@@ -300,9 +316,14 @@ exports.deleteMovies = async (req, res) => {
       // console.log(results);
       return helper(res, 200, true, `Movie id ${id} deleted successfully`)
     }
-    return helper(res, 400, false, `Failed to delete movie id ${id}`)
+    return helper(res, 400, false, `Failed to delete movie id ${id} `)
   } catch (error) {
     console.log(error);
     return helper(res, 400, false, 'Bad Request')
   }
 }
+
+const removeImage = (filePath) => {
+  filePath = path.join(__dirname, "../../", filePath);
+  fs.unlink(filePath, (err) => new Error(err));
+};
