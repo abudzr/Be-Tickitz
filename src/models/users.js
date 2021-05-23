@@ -16,7 +16,7 @@ const users = {
   },
   findUser: (id, message) => {
     return new Promise((resolve, reject) => {
-      connection.query("SELECT * FROM users WHERE id = ?", id, (err, result) => {
+      connection.query("SELECT * FROM users WHERE idUsers = ?", id, (err, result) => {
         if (!err) {
           if (result.length == 1) {
             resolve(result);

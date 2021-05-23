@@ -5,6 +5,8 @@ const common = require('../helpers/common')
 // const { v4: uuidv4 } = require('uuid')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const fs = require("fs");
+const path = require("path");
 
 exports.getUsers = (req, res) => {
   usersModels.getUsers()
@@ -20,6 +22,7 @@ exports.getUsersById = (req, res) => {
   const idUsers = req.params.id
   usersModels.getUsersById(idUsers)
     .then((result) => {
+      delete result[0].password;
       helper(res, 200, true, 'success', result)
     })
 }
@@ -295,3 +298,8 @@ exports.resetpass = async (req, res) => {
     return helper(res, 401, false, 'Authentication Error', null)
   }
 }
+
+const removeImage = (filePath) => {
+  filePath = path.join(__dirname, "../..", filePath);
+  fs.unlink(filePath, (err) => new Error(err));
+};
